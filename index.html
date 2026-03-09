@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathMaze · Математический лабиринт</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            -webkit-text-fill-color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .hero {
+            padding: 5rem 0;
+            color: white;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-image {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .section {
+            padding: 5rem 0;
+            background: white;
+            border-radius: 50px 50px 0 0;
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: #718096;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .feature-list li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .tech-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .tech-item {
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            color: #4a5568;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 500;
+            border: 1px solid #667eea20;
+            transition: all 0.3s;
+        }
+
+        .tech-item:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .sketch-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .sketch-card {
+            background: #f7fafc;
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px dashed #cbd5e0;
+        }
+
+        .sketch-preview {
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            height: 150px;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .team-card {
+            text-align: center;
+            padding: 2rem;
+            background: #f7fafc;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+        }
+
+        .team-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .team-role {
+            color: #667eea;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        .timeline {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .timeline-item {
+            text-align: center;
+            position: relative;
+        }
+
+        .timeline-item::after {
+            content: "→";
+            position: absolute;
+            right: -1rem;
+            top: 20%;
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-week {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .footer-links a {
+            color: #a0aec0;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .sketch-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .timeline {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-item::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-icon">🧮</span>
+                <span>MathMaze</span>
+            </div>
+            <div class="nav-links">
+                <a href="#about">О проекте</a>
+                <a href="#features">Функции</a>
+                <a href="#tech">Технологии</a>
+                <a href="#design">Дизайн</a>
+                <a href="#team">Команда</a>
+            </div>
+            <a href="#" class="btn btn-primary">Играть демо</a>
+        </div>
+    </nav>
+
+    <!-- Hero секция -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div>
+                <span class="hero-badge">🎮 Образовательная игра</span>
+                <h1>MathMaze:<br>решай примеры,<br>проходи лабиринт</h1>
+                <p>Увлекательный платформер, где математика становится ключом к победе. Каждый уровень — новое испытание для ума и реакции.</p>
+                <div class="hero-cta">
+                    <a href="#" class="btn btn-primary">Поддержать на Kickstarter</a>
+                    <a href="#" class="btn btn-outline">GitHub</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div style="font-size: 5rem; margin-bottom: 1rem;">🎮 🧩 ➕</div>
+                <h3 style="color: white;">Геймплей MathMaze</h3>
+                <p style="color: rgba(255,255,255,0.8);">Скоро здесь будет видео демонстрация</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- О проекте -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>01 — Что такое MathMaze?</h2>
+                <p>Инновационный подход к изучению математики через игровую механику</p>
+            </div>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">🤔</div>
+                    <h3>Проблема</h3>
+                    <p>85% школьников считают математику скучной и оторванной от реальности. Традиционные методы обучения теряют эффективность в цифровую эпоху.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">💡</div>
+                    <h3>Решение</h3>
+                    <p>MathMaze превращает решение примеров в захватывающее приключение. Чтобы открыть дверь — реши уравнение. Чтобы победить врага — выбери правильный ответ.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">✨</div>
+                    <h3>Уникальность</h3>
+                    <p>Адаптивная сложность: игра подстраивается под уровень игрока. Чем лучше решаешь — тем сложнее примеры, но и больше награда.</p>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 2rem;">
+                <h3>🎯 Для кого эта игра?</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 1.5rem;">
+                    <div>
+                        <h4>👦 Школьники 7-12 лет</h4>
+                        <p>Освоение математики в игровой форме без стресса</p>
+                    </div>
+                    <div>
+                        <h4>👨‍🎓 Подростки 13-16 лет</h4>
+                        <p>Закрепление знаний и подготовка к экзаменам</p>
+                    </div>
+                    <div>
+                        <h4>👨‍👩‍👧 Семьи</h4>
+                        <p>Совместный досуг с пользой для всех</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Функциональные требования -->
+    <section class="section" id="features" style="background: #f7fafc;">
+        <div class="container">
+            <div class="section-header">
+                <h2>02 — Функциональные требования</h2>
+                <p>Что наша игра должна уметь делать</p>
+            </div>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h3>🎮 Геймплей</h3>
+                    <ul class="feature-list">
+                        <li>Управление персонажем в 2D-лабиринте</li>
+                        <li>Система дверей, открываемых решением примеров</li>
+                        <li>Враги, которых можно победить только правильным ответом</li>
+                        <li>Собираемые бонусы и улучшения</li>
+                        <li>Система чекпоинтов и сохранений</li>
+                        <li>Три уровня сложности (легкий, средний, сложный)</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>📚 Образовательная часть</h3>
+                    <ul class="feature-list">
+                        <li>Адаптивная генерация примеров под возраст</li>
+                        <li>Темы: сложение, вычитание, умножение, деление, дроби</li>
+                        <li>Статистика успеваемости для родителей</li>
+                        <li>Режим тренировки без таймера</li>
+                        <li>Подсказки и объяснения ошибок</li>
+                        <li>Система достижений за прогресс</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>👤 Пользовательская часть</h3>
+                    <ul class="feature-list">
+                        <li>Регистрация и профили игроков</li>
+                        <li>Сохранение прогресса в облаке</li>
+                        <li>Таблица лидеров среди друзей</li>
+                        <li>Настройки управления и графики</li>
+                        <li>Мультиязычность (рус/каз/англ)</li>
+                        <li>Родительский контроль времени</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Технические требования -->
+    <section class="section" id="tech">
+        <div class="container">
+            <div class="section-header">
+                <h2>03 — Технологический стек</h2>
+                <p>Инструменты, которые мы используем</p>
+            </div>
+            
+            <div class="tech-cloud">
+                <span class="tech-item">Python 3.11</span>
+                <span class="tech-item">Pygame CE</span>
+                <span class="tech-item">Tiled Map Editor</span>
+                <span class="tech-item">SQLite</span>
+                <span class="tech-item">Flask (API)</span>
+                <span class="tech-item">React (dashboard)</span>
+                <span class="tech-item">Docker</span>
+                <span class="tech-item">GitHub Actions</span>
+                <span class="tech-item">Aseprite (пиксель-арт)</span>
+                <span class="tech-item">Figma</span>
+            </div>
+            
+            <div class="card-grid" style="margin-top: 2rem;">
+                <div class="card">
+                    <h3>🎨 Клиентская часть</h3>
+                    <p><strong>Движок:</strong> Pygame CE для отличной производительности</p>
+                    <p><strong>Графика:</strong> Пиксель-арт в стиле ретро (16-bit)</p>
+                    <p><strong>Звук:</strong> Procedural audio через PySynth</p>
+                </div>
+                
+                <div class="card">
+                    <h3>☁️ Серверная часть</h3>
+                    <p><strong>API:</strong> Flask + REST</p>
+                    <p><strong>БД:</strong> SQLite (локально) / PostgreSQL (облако)</p>
+                    <p><strong>Аутентификация:</strong> JWT-токены</p>
+                </div>
+                
+                <div class="card">
+                    <h3>🚀 Деплой</h3>
+                    <p><strong>Игра:</strong> Itch.io + GitHub Releases</p>
+                    <p><strong>Сайт:</strong> GitHub Pages</p>
+                    <p><strong>API:</strong> Railway / Render</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Дизайн и прототипы -->
+    <section class="section" id="design" style="background: #f7fafc;">
+        <div class="container">
+            <div class="section-header">
+                <h2>04 — Прототипы и дизайн</h2>
+                <p>Первые наброски и концепты игры</p>
+            </div>
+            
+            <div class="sketch-grid">
+                <div class="sketch-card">
+                    <div class="sketch-preview">🏠</div>
+                    <h4>Главное меню</h4>
+                    <p>Начальный экран с выбором уровня</p>
+                </div>
+                
+                <div class="sketch-card">
+                    <div class="sketch-preview">🗺️</div>
+                    <h4>Лабиринт</h4>
+                    <p>Основной геймплей с дверями-примерами</p>
+                </div>
+                
+                <div class="sketch-card">
+                    <div class="sketch-preview">➕</div>
+                    <h4>Окно примера</h4>
+                    <p>Интерфейс решения уравнений</p>
+                </div>
+                
+                <div class="sketch-card">
+                    <div class="sketch-preview">📊</div>
+                    <h4>Статистика</h4>
+                    <p>Прогресс и достижения</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <p>🎨 Все скетчи выполнены в Figma. Полный прототип доступен по запросу.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Команда (обновлено с вашими именами) -->
+    <section class="section" id="team">
+        <div class="container">
+            <div class="section-header">
+                <h2>05 — Наша команда</h2>
+                <p>Кто работает над проектом</p>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-photo">👨‍💻</div>
+                    <h3>Abdakas Daniyar</h3>
+                    <div class="team-role">Lead Developer / Programmer</div>
+                    <p>Отвечает за разработку игры на Pygame, архитектуру проекта и интеграцию всех систем. Увлекается геймдизайном и математикой.</p>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-photo">🎨</div>
+                    <h3>Serikbay Abdulzhabbar</h3>
+                    <div class="team-role">UI/UX Designer / Researcher</div>
+                    <p>Создает дизайн интерфейсов, пиксель-арт и анимации. Разрабатывает образовательную механику и тестирует игровой баланс.</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; padding: 2rem; background: #f7fafc; border-radius: 20px;">
+                <h3>💪 Наша мотивация</h3>
+                <p>Мы хотим сделать изучение математики увлекательным приключением. Верим, что игры могут изменить образование к лучшему и помочь школьникам полюбить точные науки.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Таймлайн и дополнительная информация -->
+    <section class="section" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+        <div class="container">
+            <div class="section-header">
+                <h2 style="color: white;">06 — Дорожная карта</h2>
+                <p style="color: rgba(255,255,255,0.9);">Как мы планируем разрабатывать проект</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-week">1-2</div>
+                    <h4>Концепт</h4>
+                    <p>Дизайн-документ, прототипы, выбор механик</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-week">3-4</div>
+                    <h4>Прототип</h4>
+                    <p>Базовый движок, первый уровень, механика примеров</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-week">5-6</div>
+                    <h4>Контент</h4>
+                    <p>5 уровней, враги, бонусы, визуальные эффекты</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-week">7-8</div>
+                    <h4>Релиз</h4>
+                    <p>Тестирование, полировка, публикация</p>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem;">
+                <div class="card" style="background: rgba(255,255,255,0.1); color: white;">
+                    <h3 style="color: white;">🔮 Будущие улучшения</h3>
+                    <ul style="list-style: none;">
+                        <li>✓ Мультиплеер (соревнования)</li>
+                        <li>✓ Редактор уровней</li>
+                        <li>✓ Мобильная версия</li>
+                        <li>✓ Интеграция со школьной программой</li>
+                    </ul>
+                </div>
+                
+                <div class="card" style="background: rgba(255,255,255,0.1); color: white;">
+                    <h3 style="color: white;">❤️ Социальная миссия</h3>
+                    <p>Бесплатная версия для школ и детских домов. Часть средств пойдет на создание курсов по математике для детей из сельской местности.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="logo" style="justify-content: center; margin-bottom: 2rem;">
+                <span class="logo-icon">🧮</span>
+                <span style="color: white; -webkit-text-fill-color: white;">MathMaze</span>
+            </div>
+            
+            <div class="footer-links">
+                <a href="#">О проекте</a>
+                <a href="#">GitHub</a>
+                <a href="#">Демо</a>
+                <a href="#">Контакты</a>
+            </div>
+            
+            <p style="margin: 2rem 0; color: #a0aec0;">Сайт проекта: mathmaze.github.io (скоро)</p>
+            <p style="color: #718096;">© 2024 MathMaze Team. Abdakas Daniyar & Serikbay Abdulzhabbar</p>
+        </div>
+    </footer>
+</body>
+</html>
